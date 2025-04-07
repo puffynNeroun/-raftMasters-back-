@@ -41,7 +41,7 @@ model Item {
   materialId    Int
   techniqueId   Int?
   mainImage     String?
-  master        Master       @relation(fields: [masterId], references: [id])
+  master        Master       @relation(fields: [masterId], references: [id], onDelete: Cascade)
   category      Category     @relation(fields: [categoryId], references: [id])
   subcategory   Subcategory? @relation(fields: [subcategoryId], references: [id])
   material      Material     @relation(fields: [materialId], references: [id])
@@ -55,7 +55,7 @@ model Achievement {
   title       String
   year        Int?
   description String?
-  master      Master  @relation(fields: [masterId], references: [id])
+  master      Master  @relation(fields: [masterId], references: [id], onDelete: Cascade)
 }
 
 model ItemImage {

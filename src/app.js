@@ -15,6 +15,7 @@ const materialRoutes = require('./routes/materialRoutes');
 const techniqueRoutes = require('./routes/techniqueRoutes');
 const regionRoutes = require('./routes/regionRoutes');
 const subcategoryRoutes = require('./routes/subcategoryRoutes');
+const achievementRoutes = require('./routes/achievementRoutes');
 
 // Создаем приложение
 const app = express();
@@ -34,6 +35,7 @@ app.use('/api/materials', materialRoutes);
 app.use('/api/techniques', techniqueRoutes);
 app.use('/api/regions', regionRoutes);
 app.use('/api/subcategories', subcategoryRoutes);
+app.use('/api/achievements', achievementRoutes);
 
 // Обработка ошибок
 app.use(errorHandler);
