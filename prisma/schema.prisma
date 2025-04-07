@@ -1,0 +1,122 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Master {
+  id               Int           @id @default(autoincrement())
+  fullName         String
+  categoryId       Int
+  regionId         Int
+  shortDescription String
+  biography        String?
+  contactPhone     String?
+  contactEmail     String?
+  socialLinks      String?
+  photo            String?
+  achievements     Achievement[]
+  items            Item[]
+  region           Region        @relation(fields: [regionId], references: [id])
+  category         Category      @relation(fields: [categoryId], references: [id])
+}
+
+model Item {
+  id            Int          @id @default(autoincrement())
+  name          String
+  description   String
+  price         Float
+  masterId      Int
+  categoryId    Int
+  subcategoryId Int?
+  materialId    Int
+  techniqueId   Int?
+  mainImage     String?
+  master        Master       @relation(fields: [masterId], references: [id])
+  category      Category     @relation(fields: [categoryId], references: [id])
+  subcategory   Subcategory? @relation(fields: [subcategoryId], references: [id])
+  material      Material     @relation(fields: [materialId], references: [id])
+  technique     Technique?   @relation(fields: [techniqueId], references: [id])
+  images        ItemImage[]
+}
+
+model Achievement {
+  id          Int     @id @default(autoincrement())
+  masterId    Int
+  title       String
+  year        Int?
+  description String?
+  master      Master  @relation(fields: [masterId], references: [id])
+}
+
+model ItemImage {
+  id        Int     @id @default(autoincrement())
+  itemId    Int
+  imagePath String
+  caption   String?
+  item      Item    @relation(fields: [itemId], references: [id])
+}
+
+model News {
+  id            Int      @id @default(autoincrement())
+  title         String
+  content       String
+  publishedDate DateTime
+  image         String?
+}
+
+model Event {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  eventDate   DateTime
+  location    String
+  image       String?
+}
+
+model Category {
+  id          Int           @id @default(autoincrement())
+  name        String
+  description String?
+  items       Item[]
+  masters     Master[]
+  Subcategory Subcategory[]
+}
+
+model Subcategory {
+  id          Int      @id @default(autoincrement())
+  categoryId  Int
+  name        String
+  description String?
+  category    Category @relation(fields: [categoryId], references: [id])
+  Item        Item[]
+}
+
+model Material {
+  id          Int     @id @default(autoincrement())
+  name        String
+  description String?
+  items       Item[]
+}
+
+model Technique {
+  id          Int     @id @default(autoincrement())
+  name        String
+  description String?
+  items       Item[]
+}
+
+model Region {
+  id      Int      @id @default(autoincrement())
+  name    String
+  masters Master[]
+}
