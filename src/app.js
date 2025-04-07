@@ -2,10 +2,16 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const logger = require('./middlewares/loggerMiddleware');
+const errorHandler = require('./middlewares/errorMiddleware');
 
 // Импорт маршрутов
 const masterRoutes = require('./routes/masterRoutes');
 const itemRoutes = require('./routes/itemRoutes');
+const newsRoutes = require('./routes/newsRoutes');
+const eventsRoutes = require('./routes/eventsRoutes');
+const categoryRoutes = require('./routes/categoryRoutes');
+const materialRoutes = require('./routes/materialRoutes');
 const techniqueRoutes = require('./routes/techniqueRoutes');
 const regionRoutes = require('./routes/regionRoutes');
 const subcategoryRoutes = require('./routes/subcategoryRoutes');
@@ -16,19 +22,21 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
+app.use(logger);
 
 // Используем маршруты
 app.use('/api/masters', masterRoutes);
 app.use('/api/items', itemRoutes);
+app.use('/api/news', newsRoutes);
+app.use('/api/events', eventsRoutes);
+app.use('/api/categories', categoryRoutes);
+app.use('/api/materials', materialRoutes);
 app.use('/api/techniques', techniqueRoutes);
 app.use('/api/regions', regionRoutes);
 app.use('/api/subcategories', subcategoryRoutes);
 
 // Обработка ошибок
-app.use((err, req, res, next) => {
-    console.error('Ошибка:', err.message);
-    res.status(500).json({ message: 'Внутренняя ошибка сервера' });
-});
+app.use(errorHandler);
 
 // Запуск сервера
 const PORT = process.env.PORT || 5000;
