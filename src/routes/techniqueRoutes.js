@@ -5,11 +5,12 @@ const {
     createTechnique,
     deleteTechnique,
 } = require('../controllers/techniqueController');
+const {checkAdmin} = require("../middlewares/authMiddleware");
 
 const router = express.Router();
 
 router.get('/', getAllTechniques);
-router.post('/', createTechnique);
-router.delete('/:id', deleteTechnique);
+router.post('/', checkAdmin, createTechnique);
+router.delete('/:id', checkAdmin, deleteTechnique);
 
 module.exports = router;

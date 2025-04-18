@@ -3,16 +3,47 @@ const prisma = new PrismaClient();
 
 const getAllItems = async (req, res) => {
     try {
-        const { category, material, master } = req.query;
+        const {
+            category,
+            categoryId,
+            subcategoryId,
+            material,
+            materialId,
+            techniqueId,
+            master,
+            priceMin,
+            priceMax,
+            search,
+            sortBy
+        } = req.query;
+
+        const whereClause = {
+            AND: [
+                category ? { category: { name: { contains: category, mode: 'insensitive' } } } : {},
+                categoryId ? { categoryId: parseInt(categoryId) } : {},
+                subcategoryId ? { subcategoryId: parseInt(subcategoryId) } : {},
+                material ? { material: { name: { contains: material, mode: 'insensitive' } } } : {},
+                materialId ? { materialId: parseInt(materialId) } : {},
+                techniqueId ? { techniqueId: parseInt(techniqueId) } : {},
+                master ? { master: { fullName: { contains: master, mode: 'insensitive' } } } : {},
+                priceMin ? { price: { gte: parseFloat(priceMin) } } : {},
+                priceMax ? { price: { lte: parseFloat(priceMax) } } : {},
+                search ? {
+                    OR: [
+                        { name: { contains: search, mode: 'insensitive' } },
+                        { description: { contains: search, mode: 'insensitive' } }
+                    ]
+                } : {}
+            ]
+        };
+
+        let orderByClause = undefined;
+        if (sortBy === 'price_asc') orderByClause = { price: 'asc' };
+        if (sortBy === 'price_desc') orderByClause = { price: 'desc' };
 
         const items = await prisma.item.findMany({
-            where: {
-                AND: [
-                    category ? { category: { name: category } } : {},
-                    material ? { material: { name: material } } : {},
-                    master ? { master: { fullName: master } } : {}
-                ]
-            },
+            where: whereClause,
+            orderBy: orderByClause,
             include: {
                 master: true,
                 category: true,
@@ -29,6 +60,8 @@ const getAllItems = async (req, res) => {
         res.status(500).json({ message: 'Ошибка получения изделий' });
     }
 };
+
+
 
 const getItemById = async (req, res) => {
     try {

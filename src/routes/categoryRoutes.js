@@ -5,11 +5,12 @@ const {
     createCategory,
     deleteCategory,
 } = require('../controllers/categoryController');
+const {checkAdmin} = require("../middlewares/authMiddleware");
 
 const router = express.Router();
 
 router.get('/', getAllCategories);
-router.post('/', createCategory);
-router.delete('/:id', deleteCategory);
+router.post('/', checkAdmin, createCategory);
+router.delete('/:id', checkAdmin, deleteCategory);
 
 module.exports = router;

@@ -5,11 +5,12 @@ const {
     createRegion,
     deleteRegion,
 } = require('../controllers/regionController');
+const {checkAdmin} = require("../middlewares/authMiddleware");
 
 const router = express.Router();
 
 router.get('/', getAllRegions);
-router.post('/', createRegion);
-router.delete('/:id', deleteRegion);
+router.post('/', checkAdmin, createRegion);
+router.delete('/:id', checkAdmin, deleteRegion);
 
 module.exports = router;

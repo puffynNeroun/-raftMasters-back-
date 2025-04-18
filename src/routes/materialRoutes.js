@@ -5,11 +5,12 @@ const {
     createMaterial,
     deleteMaterial,
 } = require('../controllers/materialController');
+const {checkAdmin} = require("../middlewares/authMiddleware");
 
 const router = express.Router();
 
 router.get('/', getAllMaterials);
-router.post('/', createMaterial);
-router.delete('/:id', deleteMaterial);
+router.post('/', checkAdmin, createMaterial);
+router.delete('/:id', checkAdmin, deleteMaterial);
 
 module.exports = router;

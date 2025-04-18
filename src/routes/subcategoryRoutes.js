@@ -5,11 +5,12 @@ const {
     createSubcategory,
     deleteSubcategory,
 } = require('../controllers/subcategoryController');
+const {checkAdmin} = require("../middlewares/authMiddleware");
 
 const router = express.Router();
 
 router.get('/', getAllSubcategories);
-router.post('/', createSubcategory);
-router.delete('/:id', deleteSubcategory);
+router.post('/', checkAdmin, createSubcategory);
+router.delete('/:id', checkAdmin, deleteSubcategory);
 
 module.exports = router;
