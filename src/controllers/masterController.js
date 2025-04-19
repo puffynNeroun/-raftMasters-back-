@@ -30,6 +30,7 @@ const getAllMasters = async (req, res) => {
 const getMasterById = async (req, res) => {
     try {
         const { id } = req.params;
+
         const master = await prisma.master.findUnique({
             where: { id: parseInt(id) },
             include: {
@@ -69,15 +70,22 @@ const createMaster = async (req, res) => {
             biography,
             contactPhone,
             contactEmail,
-            socialLinks,
-            photo,
         } = req.body;
+
+        // Обработка массива socialLinks
+        let socialLinks = req.body.socialLinks;
+        if (Array.isArray(socialLinks)) {
+            socialLinks = socialLinks.join(',');
+        }
+
+        // Обработка фото
+        const photo = req.file ? `/uploads/${req.file.filename}` : null;
 
         const newMaster = await prisma.master.create({
             data: {
                 fullName,
-                categoryId,
-                regionId,
+                categoryId: +categoryId,
+                regionId: +regionId,
                 shortDescription,
                 biography,
                 contactPhone,
@@ -105,22 +113,29 @@ const updateMaster = async (req, res) => {
             biography,
             contactPhone,
             contactEmail,
-            socialLinks,
-            photo,
         } = req.body;
+
+        // Обработка массива socialLinks
+        let socialLinks = req.body.socialLinks;
+        if (Array.isArray(socialLinks)) {
+            socialLinks = socialLinks.join(',');
+        }
+
+        // Обработка нового фото (если отправили)
+        const photo = req.file ? `/uploads/${req.file.filename}` : undefined;
 
         const updatedMaster = await prisma.master.update({
             where: { id: parseInt(id) },
             data: {
                 fullName,
-                categoryId,
-                regionId,
+                categoryId: +categoryId,
+                regionId: +regionId,
                 shortDescription,
                 biography,
                 contactPhone,
                 contactEmail,
                 socialLinks,
-                photo,
+                ...(photo && { photo }), // Обновлять фото, только если оно есть
             },
         });
 
@@ -149,6 +164,7 @@ const deleteMaster = async (req, res) => {
 const getMasterAchievements = async (req, res) => {
     try {
         const { id } = req.params;
+
         const achievements = await prisma.achievement.findMany({
             where: { masterId: parseInt(id) },
         });

@@ -32,12 +32,14 @@ const getNewsById = async (req, res) => {
 
 const createNews = async (req, res) => {
     try {
-        const { title, content, publishedDate, image } = req.body;
+        const { title, content, type } = req.body;
+        const image = req.file ? `/uploads/${req.file.filename}` : null;
+
         const newNews = await prisma.news.create({
             data: {
                 title,
                 content,
-                publishedDate: new Date(publishedDate),
+                type,
                 image,
             },
         });
@@ -48,6 +50,9 @@ const createNews = async (req, res) => {
         res.status(500).json({ message: 'Ошибка создания новости' });
     }
 };
+
+
+
 
 const updateNews = async (req, res) => {
     try {

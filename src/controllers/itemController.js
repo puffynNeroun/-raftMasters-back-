@@ -100,19 +100,21 @@ const createItem = async (req, res) => {
             subcategoryId,
             materialId,
             techniqueId,
-            mainImage,
         } = req.body;
+
+        // если изображение отправлено — оно будет тут
+        const mainImage = req.file ? `/uploads/${req.file.filename}` : null;
 
         const newItem = await prisma.item.create({
             data: {
                 name,
                 description,
-                price,
-                masterId,
-                categoryId,
-                subcategoryId,
-                materialId,
-                techniqueId,
+                price: parseFloat(price),
+                masterId: parseInt(masterId),
+                categoryId: parseInt(categoryId),
+                subcategoryId: subcategoryId ? parseInt(subcategoryId) : null,
+                materialId: parseInt(materialId),
+                techniqueId: techniqueId ? parseInt(techniqueId) : null,
                 mainImage,
             },
         });
@@ -123,6 +125,7 @@ const createItem = async (req, res) => {
         res.status(500).json({ message: 'Ошибка создания изделия' });
     }
 };
+
 
 const updateItem = async (req, res) => {
     try {
@@ -136,21 +139,22 @@ const updateItem = async (req, res) => {
             subcategoryId,
             materialId,
             techniqueId,
-            mainImage,
         } = req.body;
+
+        const mainImage = req.file ? `/uploads/${req.file.filename}` : undefined;
 
         const updatedItem = await prisma.item.update({
             where: { id: parseInt(id) },
             data: {
                 name,
                 description,
-                price,
-                masterId,
-                categoryId,
-                subcategoryId,
-                materialId,
-                techniqueId,
-                mainImage,
+                price: parseFloat(price),
+                masterId: parseInt(masterId),
+                categoryId: parseInt(categoryId),
+                subcategoryId: subcategoryId ? parseInt(subcategoryId) : null,
+                materialId: parseInt(materialId),
+                techniqueId: techniqueId ? parseInt(techniqueId) : null,
+                ...(mainImage && { mainImage }), // обновлять только если есть файл
             },
         });
 
@@ -160,6 +164,7 @@ const updateItem = async (req, res) => {
         res.status(500).json({ message: 'Ошибка обновления изделия' });
     }
 };
+
 
 const deleteItem = async (req, res) => {
     try {

@@ -4,6 +4,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const logger = require('./middlewares/loggerMiddleware');
 const errorHandler = require('./middlewares/errorMiddleware');
+const path = require('path')
 
 // Импорт маршрутов
 const masterRoutes = require('./routes/masterRoutes');
@@ -39,6 +40,8 @@ app.use('/api/regions', regionRoutes);
 app.use('/api/subcategories', subcategoryRoutes);
 app.use('/api/achievements', achievementRoutes);
 app.use('/api/contact', contactRoutes);
+app.use('/uploads', express.static(path.join(__dirname, '/public/uploads')))
+
 
 // Обработка ошибок
 app.use(errorHandler);

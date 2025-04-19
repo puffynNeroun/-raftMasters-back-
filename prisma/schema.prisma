@@ -70,8 +70,9 @@ model News {
   id            Int      @id @default(autoincrement())
   title         String
   content       String
-  publishedDate DateTime
+  publishedDate DateTime @default(now())
   image         String?
+  type          String
 }
 
 model Event {

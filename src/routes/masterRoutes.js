@@ -1,4 +1,5 @@
-const express = require('express');
+const express = require('express')
+const upload = require('../middlewares/uploadMiddleware')
 const {
     getAllMasters,
     getMasterById,
@@ -6,20 +7,18 @@ const {
     updateMaster,
     deleteMaster,
     getMasterAchievements,
-} = require('../controllers/masterController');
+} = require('../controllers/masterController')
+const { checkAdmin } = require('../middlewares/authMiddleware')
 
-const { checkAdmin } = require('../middlewares/authMiddleware'); // подключаем middleware
+const router = express.Router()
 
-const router = express.Router();
+router.get('/', getAllMasters)
+router.get('/:id', getMasterById)
+router.get('/:id/achievements', getMasterAchievements)
 
-// Публичные маршруты
-router.get('/', getAllMasters);
-router.get('/:id', getMasterById);
-router.get('/:id/achievements', getMasterAchievements);
+// Загрузка фото → поле "photo" в форме
+router.post('/', checkAdmin, upload.single('photo'), createMaster)
+router.put('/:id', checkAdmin, upload.single('photo'), updateMaster)
+router.delete('/:id', checkAdmin, deleteMaster)
 
-// Защищённые маршруты (только для админа)
-router.post('/', checkAdmin, createMaster);
-router.put('/:id', checkAdmin, updateMaster);
-router.delete('/:id', checkAdmin, deleteMaster);
-
-module.exports = router;
+module.exports = router
